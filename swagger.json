@@ -1,0 +1,1762 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Portal FSNT",
+        "description": "",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Servidor Local"
+        }
+    ],
+    "paths": {
+        "/users": {
+            "get": {
+                "summary": "Rota responsável por retornar todos os usuários",
+                "tags": ["Usuários"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Filtrar usuários por ID (opcional)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "nome",
+                        "in": "query",
+                        "description": "Filtrar usuários por nome (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Filtrar usuários por email (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "telefone",
+                        "in": "query",
+                        "description": "Filtrar usuários por telefone (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name":"nivel_acesso",
+                        "in": "query",
+                        "description": "Filtrar usuários por nível de acesso (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name":"status_usuario",
+                        "in": "query",
+                        "description": "Filtrar usuários por status (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name":"nome_instituicao",
+                        "in": "query",
+                        "description": "Filtrar usuários por nome da instituição (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "nome": "Felipe",
+                                        "email": "felipe@gmail.com",
+                                        "telefone": "(14) 99666-0077",
+                                        "nivel_acesso": "Administrador",
+                                        "status_usuario": "Ativo",
+                                        "id_instituicao": 1,
+                                        "nome_instituicao": "Fatec"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/users/create": {
+            "post": {
+                "summary": "Rota responsável por cadastrar um usuário",
+                "tags": ["Usuários"],
+                "requestBody": {
+                    "description": "Dados para criar um usuário",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "João"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "joao@outlook.com"
+                                    },
+                                    "senha": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "(14) 99666 - 0077"
+                                    },
+                                    "nivel_acesso": {
+                                        "type": "string",
+                                        "example": "Administrador, Solicitante ou Visualizador"
+                                    },
+                                    "id_instituicao": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "required": ["nome", "email", "senha", "telefone", "nivel_acesso", "id_instituicao"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Usuário cadastrado com sucesso"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "409": {
+                        "description": "Este usuário já está cadastrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/users/identify": {
+            "post": {
+              "summary": "Rota responsável por identificar um usuário através do token de autenticação",
+              "tags": ["Usuários"],
+              "parameters": [
+                {
+                  "in": "header",
+                  "name": "Authorization",
+                  "description": "Token de autenticação",
+                  "required": true,
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Operação bem-sucedida",
+                  "content": {
+                    "application/json": {
+                      "example": {
+                        "id": 1,
+                        "nome": "Felipe",
+                        "email": "felipe@gmail.com",
+                        "nivel_acesso": "Administrador"
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "summary": "Rota responsável por efetuar o Login do usuário",
+                "tags": ["Usuários"],
+                "requestBody": {
+                    "description": "Dados para efetuar login do usuário",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "rodolfo@yahoo.com.br"
+                                    },
+                                    "senha": {
+                                        "type": "string",
+                                        "example": "senha123"
+                                    }
+                                },
+                                "required": ["email", "senha"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Autenticado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Autenticado com sucesso",
+                                    "token": "token"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "401": {
+                        "description": "Usuário ou senha inválidos"
+                    },
+                    "404":{
+                        "description": "Usuário não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/users/update-password": {
+            "patch": {
+                "summary": "Rota responsável por atualizar a senha do usuário",
+                "tags": ["Usuários"],
+                "requestBody": {
+                    "description": "Dados para atualizar a senha do usuário",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "felipe@gmail.com"
+                                    },
+                                    "senha_atual": {
+                                        "type": "string",
+                                        "example": "senha123"
+                                    },
+                                    "senha_nova": {
+                                        "type": "string",
+                                        "example": "12345"
+                                    }
+                                },
+                                "required": ["email", "senha_atual", "senha_nova"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Senha atualizada com sucesso"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "401": {
+                        "description": "Senha atual inválida"
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/users/update/{id}": {
+            "patch": {
+                "summary": "Rota responsável por atualizar um usuário",
+                "tags": ["Usuários"],
+                "requestBody": {
+                    "description": "Dados para atualizar o usuário",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "João"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "joao@outlook.com"
+                                    },
+                                    "senha": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "(14) 99666 - 0077"
+                                    },
+                                    "nivel_acesso": {
+                                        "type": "string",
+                                        "example": "Administrador, Solicitante ou Visualizador"
+                                    },
+                                    "id_instituicao": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "required": ["nome", "email", "senha", "telefone", "nivel_acesso", "id_instituicao"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Usuário atualizado com sucesso"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/users/disable/{id}": {
+            "patch": {
+                "summary": "Rota responsável por desabilitar um usuário",
+                "tags": ["Usuários"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário desativado com sucesso"
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },      
+        "/users/enable/{id}": {
+            "patch": {
+                "summary": "Rota responsável por ativar um usuário",
+                "tags": ["Usuários"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário ativado com sucesso"
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },          
+        "/users/delete/{id}": {
+            "delete": {
+                "summary": "Rota responsável por deletar um usuário",
+                "tags": ["Usuários"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário deletado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/instituicoes": {
+            "get": {
+                "summary": "Rota responsável por retornar todas as instituições",
+                "tags": ["Instituições"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Filtrar instituições por ID (opcional)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "nome",
+                        "in": "query",
+                        "description": "Filtrar instituições por nome (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "nome": "Instituição A"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/instituicoes/create": {
+            "post": {
+                "summary": "Rota responsável por cadastrar uma instituição",
+                "tags": ["Instituições"],
+                "requestBody": {
+                    "description": "Dados para criar uma instituição",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Instituição B"
+                                    }
+                                },
+                                "required": ["nome"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Instituição cadastrada com sucesso"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "409": {
+                        "description": "Esta instituição já está cadastrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/instituicoes/update/{id}": {
+            "patch": {
+                "summary": "Rota responsável por atualizar uma instituição",
+                "tags": ["Instituições"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualizar a instituição",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Instituição C"
+                                    }
+                                },
+                                "required": ["nome"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Instituição atualizada com sucesso"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "404": {
+                        "description": "Instituição não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/instituicoes/delete/{id}": {
+            "delete": {
+                "summary": "Rota responsável por deletar uma instituição",
+                "tags": ["Instituições"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Instituição deletada com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "404": {
+                        "description": "Instituição não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/espacos": {
+            "get": {
+                "summary": "Rota responsável por retornar todos os espaços",
+                "tags": ["Espaços"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Filtrar espaços por ID (opcional)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "nome",
+                        "in": "query",
+                        "description": "Filtrar espaços por nome (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "nome": "Espaço A"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/espacos/create": {
+            "post": {
+                "summary": "Rota responsável por cadastrar um espaço",
+                "tags": ["Espaços"],
+                "requestBody": {
+                    "description": "Dados para criar um espaço",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Espaço A"
+                                    },
+                                    "ponto_referencia": {
+                                        "type": "string",
+                                        "example": "Ponto de referência A"
+                                    },
+                                    "localizacao": {
+                                        "type": "string",
+                                        "example": "Localização A"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Descrição A"
+                                    },
+                                    "id_instituicao": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "required": ["nome", "ponto_referencia", "localizacao", "descricao", "id_instituicao"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Espaço cadastrado com sucesso"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "409": {
+                        "description": "Este espaço já está cadastrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/espacos/update/{id}": {
+            "patch": {
+                "summary": "Rota responsável por atualizar um espaço",
+                "tags": ["Espaços"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualizar o espaço",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Espaço B"
+                                    },
+                                    "ponto_referencia": {
+                                        "type": "string",
+                                        "example": "Ponto de referência B"
+                                    },
+                                    "localizacao": {
+                                        "type": "string",
+                                        "example": "Localização B"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Descrição B"
+                                    },
+                                    "id_instituicao": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "required": ["nome", "ponto_referencia", "localizacao", "descricao", "id_instituicao"]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Operação bem-sucedida",
+                            "content": {
+                                "application/json": {
+                                    "example": {
+                                        "message": "Espaço atualizado com sucesso"
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Erro nos parâmetros de entrada"
+                        },
+                        "404": {
+                            "description": "Espaço não encontrado"
+                        },
+                        "500": {
+                            "description": "Erro interno do servidor"
+                        }
+                    }
+                }
+            }
+        },
+        "/espacos/delete/{id}": {
+            "delete": {
+                "summary": "Rota responsável por deletar um espaço",
+                "tags": ["Espaços"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Espaço deletado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "404": {
+                        "description": "Espaço não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/solicitacoes": {
+            "get": {
+                "summary": "Rota responsável por retornar todas as solicitações",
+                "tags": ["Solicitações"],
+                "parameters": [
+                    {
+                        "name": "id_solicitacao",
+                        "in": "query",
+                        "description": "Filtrar solicitações por ID (opcional)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "data_solicitacao",
+                        "in": "query",
+                        "description": "Filtrar solicitações por data de solicitação (opcional)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "nome_espaco",
+                        "in": "query",
+                        "description": "Filtrar solicitações por nome do espaço (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status_solicitacao",
+                        "in": "query",
+                        "description": "Filtrar solicitações por status (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id_solicitacao": 1,
+                                        "data_solicitacao": "2023-10-15",
+                                        "nome_espaco": "Espaço A",
+                                        "status_solicitacao": "Pendente"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/solicitacoes/solicitar": {
+            "post": {
+                "summary": "Rota responsável por solicitar o uso de um espaço",
+                "tags": ["Solicitações"],
+                "requestBody": {
+                    "description": "Dados para solicitar o uso de um espaço",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data_uso": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-10-20"
+                                    },
+                                    "hora_inicio": {
+                                        "type": "string",
+                                        "example": "09:00"
+                                    },
+                                    "hora_termino": {
+                                        "type": "string",
+                                        "example": "11:00"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Descrição da solicitação"
+                                    },
+                                    "id_espaco": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "required": ["data_uso", "hora_inicio", "hora_termino", "descricao", "id_espaco"]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Operação bem-sucedida",
+                            "content": {
+                                "application/json": {
+                                    "example": {
+                                        "message": "Solicitação enviada com sucesso"
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Erro nos parâmetros de entrada"
+                        },
+                        "500": {
+                            "description": "Erro interno do servidor"
+                        }
+                    }
+                }
+            }
+        },
+        "/solicitacoes/aprovar/{id}": {
+            "patch": {
+                "summary": "Rota responsável por aprovar uma solicitação",
+                "tags": ["Solicitações"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Solicitação aprovada com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "404": {
+                        "description": "Solicitação não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/solicitacoes/rejeitar/{id}": {
+            "patch": {
+                "summary": "Rota responsável por rejeitar uma solicitação",
+                "tags": ["Solicitações"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Solicitação reprovada com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "404": {
+                        "description": "Solicitação não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/eventos": {
+            "get": {
+                "summary": "Rota responsável por retornar todos os eventos",
+                "tags": ["Eventos"],
+                "parameters": [
+                    {
+                        "name": "id_evento",
+                        "in": "query",
+                        "description": "Filtrar eventos por ID (opcional)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "nome",
+                        "in": "query",
+                        "description": "Filtrar eventos por nome (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "data_evento",
+                        "in": "query",
+                        "description": "Filtrar eventos por data do evento (opcional)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "tipo_evento",
+                        "in": "query",
+                        "description": "Filtrar eventos por tipo de evento (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "modalidade",
+                        "in": "query",
+                        "description": "Filtrar eventos por modalidade (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id_evento": 1,
+                                        "nome": "Evento A",
+                                        "data_evento": "2023-10-20",
+                                        "tipo_evento": "Conferência",
+                                        "modalidade": "Presencial"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/eventos/create": {
+            "post": {
+                "summary": "Rota responsável por criar um evento",
+                "tags": ["Eventos"],
+                "requestBody": {
+                    "description": "Dados para criar um evento",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Evento B"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Descrição do evento"
+                                    },
+                                    "data_evento": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-11-15"
+                                    },
+                                    "hora_inicio": {
+                                        "type": "string",
+                                        "example": "09:00"
+                                    },
+                                    "hora_termino": {
+                                        "type": "string",
+                                        "example": "17:00"
+                                    },
+                                    "endereco": {
+                                        "type": "string",
+                                        "example": "Rua Evento, 123"
+                                    },
+                                    "tipo_evento": {
+                                        "type": "string",
+                                        "example": "Conferência"
+                                    },
+                                    "modalidade": {
+                                        "type": "string",
+                                        "example": "Presencial"
+                                    },
+                                    "id_espaco": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "required": ["nome", "descricao", "data_evento", "hora_inicio", "hora_termino", "endereco", "tipo_evento", "modalidade", "id_espaco"]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Operação bem-sucedida",
+                            "content": {
+                                "application/json": {
+                                    "example": {
+                                        "message": "Evento criado com sucesso"
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Erro nos parâmetros de entrada"
+                        },
+                        "409": {
+                            "description": "Este evento já está cadastrado"
+                        },
+                        "500": {
+                            "description": "Erro interno do servidor"
+                        }
+                    }
+                }
+            }
+        },
+        "/eventos/update/{id}": {
+            "patch": {
+                "summary": "Rota responsável por atualizar um evento",
+                "tags": ["Eventos"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualizar um evento",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Evento C"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Nova descrição do evento"
+                                    },
+                                    "data_evento": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-11-30"
+                                    },
+                                    "hora_inicio": {
+                                        "type": "string",
+                                        "example": "10:00"
+                                    },
+                                    "hora_termino": {
+                                        "type": "string",
+                                        "example": "18:00"
+                                    },
+                                    "endereco": {
+                                        "type": "string",
+                                        "example": "Rua Evento, 456"
+                                    },
+                                    "tipo_evento": {
+                                        "type": "string",
+                                        "example": "Workshop"
+                                    },
+                                    "modalidade": {
+                                        "type": "string",
+                                        "example": "Online"
+                                    },
+                                    "id_espaco": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Operação bem-sucedida",
+                            "content": {
+                                "application/json": {
+                                    "example": {
+                                        "message": "Evento atualizado com sucesso"
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Erro nos parâmetros de entrada"
+                        },
+                        "404": {
+                            "description": "Evento não encontrado"
+                        },
+                        "500": {
+                            "description": "Erro interno do servidor"
+                        }
+                    }
+                }
+            }
+        },
+        "/eventos/delete/{id}": {
+            "delete": {
+                "summary": "Rota responsável por deletar um evento",
+                "tags": ["Eventos"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Evento deletado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "404": {
+                        "description": "Evento não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/empresas": {
+            "get": {
+                "summary": "Rota responsável por retornar todas as empresas",
+                "tags": ["Empresas"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Filtrar empresas por ID (opcional)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "nome",
+                        "in": "query",
+                        "description": "Filtrar empresas por nome (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "nome": "Empresa A"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/empresas/create": {
+            "post": {
+                "summary": "Rota responsável por criar uma empresa",
+                "tags": ["Empresas"],
+                "requestBody": {
+                    "description": "Dados para criar uma empresa",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Empresa B"
+                                    }
+                                },
+                                "required": ["nome"]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Operação bem-sucedida",
+                            "content": {
+                                "application/json": {
+                                    "example": {
+                                        "message": "Empresa criada com sucesso"
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Erro nos parâmetros de entrada"
+                        },
+                        "409": {
+                            "description": "Esta empresa já está cadastrada"
+                        },
+                        "500": {
+                            "description": "Erro interno do servidor"
+                        }
+                    }
+                }
+            }
+        },
+        "/empresas/update/{id}": {
+            "patch": {
+                "summary": "Rota responsável por atualizar uma empresa",
+                "tags": ["Empresas"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualizar uma empresa",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Empresa C"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Operação bem-sucedida",
+                            "content": {
+                                "application/json": {
+                                    "example": {
+                                        "message": "Empresa atualizada com sucesso"
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Erro nos parâmetros de entrada"
+                        },
+                        "404": {
+                            "description": "Empresa não encontrada"
+                        },
+                        "500": {
+                            "description": "Erro interno do servidor"
+                        }
+                    }
+                }
+            }
+        },
+        "/empresas/delete/{id}": {
+            "delete": {
+                "summary": "Rota responsável por deletar uma empresa",
+                "tags": ["Empresas"],
+                "parameters": {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Empresa deletada com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "404": {
+                        "description": "Empresa não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/convidados": {
+            "get": {
+                "summary": "Rota responsável por retornar todos os convidados",
+                "tags": ["Convidados"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Filtrar convidados por ID (opcional)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "nome",
+                        "in": "query",
+                        "description": "Filtrar convidados por nome (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Filtrar convidados por email (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "telefone",
+                        "in": "query",
+                        "description": "Filtrar convidados por telefone (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cargo",
+                        "in": "query",
+                        "description": "Filtrar convidados por cargo (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nome_empresa",
+                        "in": "query",
+                        "description": "Filtrar convidados por nome da empresa (opcional)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "nome": "Convidado A",
+                                        "email": "convidadoA@email.com",
+                                        "telefone": "(123) 456-7890",
+                                        "cargo": "Cargo A",
+                                        "id_empresa": 1,
+                                        "nome_empresa": "Empresa A"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/convidados/create": {
+            "post": {
+                "summary": "Rota responsável por criar um convidado",
+                "tags": ["Convidados"],
+                "requestBody": {
+                    "description": "Dados para criar um convidado",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Convidado B"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "convidadoB@email.com"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "(987) 654-3210"
+                                    },
+                                    "cargo": {
+                                        "type": "string",
+                                        "example": "Cargo B"
+                                    },
+                                    "id_empresa": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "required": ["nome", "email", "telefone", "cargo", "id_empresa"]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Operação bem-sucedida",
+                            "content": {
+                                "application/json": {
+                                    "example": {
+                                        "message": "Convidado criado com sucesso"
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Erro nos parâmetros de entrada"
+                        },
+                        "409": {
+                            "description": "Este convidado já está cadastrado"
+                        },
+                        "500": {
+                            "description": "Erro interno do servidor"
+                        }
+                    }
+                }
+            }
+        },
+        "/convidados/convidar": {
+            "post": {
+                "summary": "Rota responsável por convidar um convidado para um evento",
+                "tags": ["Convidados"],
+                "requestBody": {
+                    "description": "Dados para convidar um convidado para um evento",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id_convidado": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "id_evento": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "required": ["id_convidado", "id_evento"]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Operação bem-sucedida",
+                            "content": {
+                                "application/json": {
+                                    "example": {
+                                        "message": "Convidado convidado com sucesso para o evento"
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Erro nos parâmetros de entrada"
+                        },
+                        "409": {
+                            "description": "Este convidado já está convidado para o evento"
+                        },
+                        "500": {
+                            "description": "Erro interno do servidor"
+                        }
+                    }
+                }
+            }
+        },
+        "/convidados/update/{id}": {
+            "patch": {
+                "summary": "Rota responsável por atualizar um convidado",
+                "tags": ["Convidados"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualizar um convidado",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Convidado C"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "convidadoC@email.com"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "(111) 222-3333"
+                                    },
+                                    "cargo": {
+                                        "type": "string",
+                                        "example": "Cargo C"
+                                    },
+                                    "id_empresa": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Operação bem-sucedida",
+                            "content": {
+                                "application/json": {
+                                    "example": {
+                                        "message": "Convidado atualizado com sucesso"
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Erro nos parâmetros de entrada"
+                        },
+                        "404": {
+                            "description": "Convidado não encontrado"
+                        },
+                        "500": {
+                            "description": "Erro interno do servidor"
+                        }
+                    }
+                }
+            }
+        },
+        "/convidados/delete/{id}": {
+            "delete": {
+                "summary": "Rota responsável por deletar um convidado",
+                "tags": ["Convidados"],
+                "parameters": {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Convidado deletado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "404": {
+                        "description": "Convidado não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        }                
+    }
+}
