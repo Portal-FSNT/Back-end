@@ -15,7 +15,8 @@ module.exports = {
                     Eventos.endereco,
                     Espacos.nome AS nome_espaco,
                     Eventos.tipo_evento,
-                    Eventos.modalidade
+                    Eventos.modalidade,
+                    Eventos.status_evento
                 FROM Eventos
                 LEFT JOIN Espacos ON Eventos.id_espaco = Espacos.id
             `;
@@ -32,11 +33,17 @@ module.exports = {
     createEvento: async (req, res) => {
         try {
             const { nome, descricao, data_evento, hora_inicio, hora_termino, endereco, id_espaco, tipo_evento, modalidade } = req.body;
-    
+            
+            const [eventos] = await mysql.execute('SELECT * FROM Eventos WHERE nome = ? AND status_evento = "Confirmado"', [nome]);
+
+            if (eventos.length > 0) {
+                return res.status(400).json({ message: 'Evento já cadastrado' });
+            }
+
             if (modalidade === "Online") {
                 const query = `
-                    INSERT INTO Eventos (nome, descricao, data_evento, hora_inicio, hora_termino, tipo_evento, modalidade)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO Eventos (nome, descricao, data_evento, hora_inicio, hora_termino, tipo_evento, modalidade, status_evento)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, "Confirmado")
                 `;
     
                 const [result] = await mysql.execute(query, [nome, descricao, data_evento, hora_inicio, hora_termino, tipo_evento, modalidade]);
@@ -44,8 +51,8 @@ module.exports = {
                 return res.status(200).json({ message: 'Evento online criado com sucesso', id: result.insertId });
             } else if (modalidade === "Presencial") {
                 const query = `
-                    INSERT INTO Eventos (nome, descricao, data_evento, hora_inicio, hora_termino, endereco, id_espaco, tipo_evento, modalidade)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO Eventos (nome, descricao, data_evento, hora_inicio, hora_termino, endereco, id_espaco, tipo_evento, modalidade, status_evento)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, "Confirmado")
                 `;
     
                 const [result] = await mysql.execute(query, [nome, descricao, data_evento, hora_inicio, hora_termino, endereco, id_espaco, tipo_evento, modalidade]);
@@ -100,6 +107,30 @@ module.exports = {
             console.error(err);
             return res.status(500).json({ message: 'Erro interno do servidor' });
         }
+    },
+
+    cancelarEvento: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            const [evento] = await mysql.execute('SELECT * FROM Eventos WHERE id = ?', [id]);
+
+            if (evento.length === 0) {
+                return res.status(400).json({ message: 'Evento não encontrado' });
+            }
+
+            const query = `
+                UPDATE Eventos
+                SET status_evento = "Cancelado"
+                WHERE id = ?
+            `;
+
+            await mysql.execute(query, [id]);
+            return res.status(200).json({ message: 'Evento cancelado com sucesso' });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Erro interno do servidor' });
+        } 
     },
 
     deleteEvento: async (req, res) => {

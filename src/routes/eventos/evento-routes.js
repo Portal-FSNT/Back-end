@@ -47,6 +47,12 @@ router.patch('/update/:id', celebrate({
     })
 }), eventoController.updateEvento);
 
+router.patch('/cancelar/:id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        id: Joi.number().integer().required()
+    })
+}), eventoController.cancelarEvento);
+
 router.delete('/delete/:id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         id: Joi.number().integer().required()

@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS Eventos (
     id_espaco INT,
     tipo_evento ENUM('Público', 'Privado') NOT NULL,
     modalidade ENUM('Presencial', 'Online') NOT NULL,
+    status_evento ENUM('Cancelado', 'Confirmado') NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (id_espaco) REFERENCES Espacos(id)
 );

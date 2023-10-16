@@ -1264,6 +1264,36 @@
                 }
             }
         },
+        "/eventos/cancelar/{id}": {
+            "patch": {
+                "summary": "Rota responsável por cancelar um evento",
+                "tags": ["Eventos"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Evento cancelado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro nos parâmetros de entrada"
+                    },
+                    "404": {
+                        "description": "Evento não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
         "/eventos/delete/{id}": {
             "delete": {
                 "summary": "Rota responsável por deletar um evento",
