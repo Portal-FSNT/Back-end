@@ -3,6 +3,7 @@ const espacoController = require('../../controllers/espacos/espaco-controller');
 const login = require('../../middlewares/login-middleware');
 const roles = require('../../middlewares/roles-middleware');
 const { celebrate, Joi, errors, Segments } = require('celebrate');
+const upload = require('../../multer');
 
 router = express.Router();
 
@@ -13,7 +14,7 @@ router.get('/', celebrate({
     })
 }), espacoController.getEspacos);
 
-router.post('/create', celebrate({
+router.post('/create', upload.single('espaco_imagem'), celebrate({
     [Segments.BODY]: Joi.object().keys({
         nome: Joi.string().required(),
         ponto_referencia: Joi.string().required(),

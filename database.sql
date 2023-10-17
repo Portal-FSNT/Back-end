@@ -94,3 +94,13 @@ CREATE TABLE IF NOT EXISTS Eventos (
     PRIMARY KEY (id),
     FOREIGN KEY (id_espaco) REFERENCES Espacos(id)
 );
+
+-- Tabela de Imagens
+CREATE TABLE IF NOT EXISTS Imagens (
+    nome_imagem VARCHAR(50) NOT NULL,
+    url_imagem VARCHAR(100) NOT NULL,
+    id_espaco INT,
+    id_evento INT,
+    FOREIGN KEY (id_espaco) REFERENCES Espacos(id),
+    FOREIGN KEY (id_evento) REFERENCES Eventos(id)
+);

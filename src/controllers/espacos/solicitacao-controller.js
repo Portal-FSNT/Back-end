@@ -69,6 +69,12 @@ module.exports = {
                 ) VALUES ( NOW(), ?, ?, ?, ?, ?, ?, 'PENDENTE')
             `;
 
+            const [espaco] = await mysql.execute('SELECT * FROM Espacos WHERE id = ?', [id_espaco]);
+
+            if (espaco.length === 0) {
+                return res.status(404).json({ message: 'Espaço não encontrado' });
+            }
+
             const result = await mysql.execute(query, [data_uso, hora_inicio, hora_termino, descricao, decodedToken.id, id_espaco]);
             return res.status(201).json({ message: 'Solicitação enviada com sucesso', id: result.insertId });
         } catch (err) {

@@ -54,6 +54,12 @@ module.exports = {
                     INSERT INTO Eventos (nome, descricao, data_evento, hora_inicio, hora_termino, endereco, id_espaco, tipo_evento, modalidade, status_evento)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, "Confirmado")
                 `;
+
+                const [espaco] = await mysql.execute('SELECT * FROM Espacos WHERE id = ?', [id_espaco]);
+
+                if (espaco.length === 0) {
+                    return res.status(400).json({ message: 'Espaço não encontrado' });
+                }
     
                 const [result] = await mysql.execute(query, [nome, descricao, data_evento, hora_inicio, hora_termino, endereco, id_espaco, tipo_evento, modalidade]);
     

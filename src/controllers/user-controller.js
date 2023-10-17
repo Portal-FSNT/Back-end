@@ -76,6 +76,12 @@ module.exports = {
                 return res.status(401).json({ message: 'Usuário já cadastrado!' });
             }
 
+            const [instituicao] = await mysql.execute('SELECT * FROM Instituicoes WHERE id = ?', [id_instituicao]);
+
+            if (instituicao.length === 0) {
+                return res.status(404).json({ message: 'Instituição não encontrada' });
+            }
+
             const hash = await bcrypt.hash(senha, 10);
 
             const query = `INSERT INTO Usuarios (nome, email, senha, telefone, nivel_acesso, status_usuario, id_instituicao) VALUES (?, ?, ?, ?, ?, 'Ativo', ?)`;
@@ -179,6 +185,12 @@ module.exports = {
 
             if (user.length === 0) {
                 return res.status(404).json({ message: 'Usuário não encontrado' });
+            }
+
+            const [instituicao] = await mysql.execute('SELECT * FROM Instituicoes WHERE id = ?', [id_instituicao]);
+
+            if (instituicao.length === 0) {
+                return res.status(404).json({ message: 'Instituição não encontrada' });
             }
 
             const query = `UPDATE Usuarios SET nome = ?, email = ?, telefone = ?, nivel_acesso = ?, id_instituicao = ? WHERE id = ?`;
