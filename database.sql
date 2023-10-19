@@ -97,8 +97,10 @@ CREATE TABLE IF NOT EXISTS Eventos (
 
 -- Tabela de Imagens
 CREATE TABLE IF NOT EXISTS Imagens (
-    nome_imagem VARCHAR(50) NOT NULL,
-    url_imagem VARCHAR(100) NOT NULL,
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    imagem LONGBLOB NOT NULL,
+    id_usuario INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     id_espaco INT,
     id_evento INT,
     FOREIGN KEY (id_espaco) REFERENCES Espacos(id),

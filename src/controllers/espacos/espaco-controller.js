@@ -39,25 +39,22 @@ module.exports = {
     createEspaco: async (req, res) => {
         try {
             const { nome, ponto_referencia, localizacao, descricao, id_instituicao } = req.body;
-            const { espaco_imagem } = req.file;
-    
+            
             const [espaco] = await mysql.execute('SELECT * FROM Espacos WHERE nome = ?', [nome]);
-    
+            
             if (espaco.length > 0) {
                 return res.status(409).send({ message: 'Espaço já cadastrado' });
             }
-
+            
             const [instituicao] = await mysql.execute('SELECT * FROM Instituicoes WHERE id = ?', [id_instituicao]);
-
+            
             if (instituicao.length === 0) {
                 return res.status(404).send({ message: 'Instituição não encontrada' });
             }
-    
+            
             const query = 'INSERT INTO Espacos (nome, ponto_referencia, localizacao, descricao, id_instituicao) VALUES (?, ?, ?, ?, ?)';
-            const query_imagem = 'INSERT INTO Imagens (nome_imagem, url_imagem id_espaco) VALUES (?, ?, ?)';
-    
+            
             const [result] = await mysql.execute(query, [nome, ponto_referencia, localizacao, descricao, id_instituicao]);
-            await mysql.execute(query_imagem, [espaco_imagem.filename, espaco_imagem.path, result.insertId]);
     
             return res.status(201).send({ message: 'Espaço cadastrado com sucesso!', id: result.insertId });
         } catch (err) {

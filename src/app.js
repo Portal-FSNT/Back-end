@@ -12,6 +12,9 @@ const espacos = require('./routes/espacos/espaco-routes');
 const instituicoes = require('./routes/espacos/instituicao-routes');
 const solicitacoes = require('./routes/espacos/solicitacao-routes');
 
+// Imagens
+const imagens = require('./routes/imagem-routes');
+
 // Projeto de Convidados
 const empresas = require('./routes/convidados/empresa-routes');
 const convidados = require('./routes/convidados/convidado-routes');
@@ -36,6 +39,9 @@ app.use('/eventos', eventos);
 app.use('/espacos', espacos);
 app.use('/instituicoes', instituicoes);
 app.use('/solicitacoes', solicitacoes);
+
+// Imagens
+app.use('/imagens', imagens);
 
 // Projeto de Convidados
 app.use('/empresas', empresas);
