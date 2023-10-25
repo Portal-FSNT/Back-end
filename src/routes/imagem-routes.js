@@ -7,13 +7,13 @@ const multer = require('multer');
 
 const storage = multer.memoryStorage();
 
-const upload = multer({ storage: storage });
+const upload = require('../multer');
 
 const router = express.Router();
 
 router.get('/image-data/:id', imagemController.getImageData);
 
-router.get('/image:id', imagemController.getImageById);
+router.get('/image/:id', imagemController.getImageById);
 
 router.post('/post', upload.single('imagem'), imagemController.postImage);
 
