@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: portal_fsnt
+-- Host: 127.0.0.1    Database: portal_fsnt_2
 -- ------------------------------------------------------
 -- Server version	8.0.34
 
@@ -140,6 +140,7 @@ CREATE TABLE `Eventos` (
   `id_espaco` int DEFAULT NULL,
   `tipo_evento` enum('Público','Privado') NOT NULL,
   `modalidade` enum('Presencial','Online') NOT NULL,
+  `status_evento` enum('Cancelado','Confirmado') NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_espaco` (`id_espaco`),
   CONSTRAINT `Eventos_ibfk_1` FOREIGN KEY (`id_espaco`) REFERENCES `Espacos` (`id`)
@@ -153,6 +154,37 @@ CREATE TABLE `Eventos` (
 LOCK TABLES `Eventos` WRITE;
 /*!40000 ALTER TABLE `Eventos` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Eventos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Imagens`
+--
+
+DROP TABLE IF EXISTS `Imagens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Imagens` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `imagem` longblob NOT NULL,
+  `id_usuario` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `id_espaco` int DEFAULT NULL,
+  `id_evento` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_espaco` (`id_espaco`),
+  KEY `id_evento` (`id_evento`),
+  CONSTRAINT `Imagens_ibfk_1` FOREIGN KEY (`id_espaco`) REFERENCES `Espacos` (`id`),
+  CONSTRAINT `Imagens_ibfk_2` FOREIGN KEY (`id_evento`) REFERENCES `Eventos` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Imagens`
+--
+
+LOCK TABLES `Imagens` WRITE;
+/*!40000 ALTER TABLE `Imagens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Imagens` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -244,11 +276,11 @@ LOCK TABLES `Usuarios` WRITE;
 UNLOCK TABLES;
 
 --
--- Dumping events for database 'portal_fsnt'
+-- Dumping events for database 'portal_fsnt_2'
 --
 
 --
--- Dumping routines for database 'portal_fsnt'
+-- Dumping routines for database 'portal_fsnt_2'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -260,4 +292,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-16  7:57:33
+-- Dump completed on 2023-10-25  9:24:37
