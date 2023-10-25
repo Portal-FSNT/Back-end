@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS portal_fsnt;
+CREATE DATABASE IF NOT EXISTS portal_fsnt_2;
 
-USE portal_fsnt;
+USE portal_fsnt_2;
 
 -- Tabela de Instituições
 CREATE TABLE IF NOT EXISTS Instituicoes (
