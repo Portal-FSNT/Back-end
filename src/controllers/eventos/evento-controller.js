@@ -13,12 +13,14 @@ module.exports = {
                     Eventos.hora_inicio,
                     Eventos.hora_termino,
                     Eventos.endereco,
+                    Instituicoes.nome AS nome_instituicao,
                     Espacos.nome AS nome_espaco,
                     Eventos.tipo_evento,
                     Eventos.modalidade,
                     Eventos.status_evento
                 FROM Eventos
                 LEFT JOIN Espacos ON Eventos.id_espaco = Espacos.id
+                LEFT JOIN Instituicoes ON Espacos.id_instituicao = Instituicoes.id
             `;
     
             const [result] = await mysql.execute(query);

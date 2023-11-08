@@ -12,8 +12,8 @@ module.exports = {
                     Convidados.id, 
                     Convidados.nome, 
                     Convidados.email, 
-                    Convidados.cargo, 
                     Convidados.telefone, 
+                    Convidados.cargo, 
                     Empresas.nome AS nome_empresa 
                 FROM Convidados 
                 INNER JOIN Empresas ON Convidados.id_empresa = Empresas.id

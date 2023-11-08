@@ -96,8 +96,14 @@ module.exports = {
 
             const [espaco] = await mysql.execute('SELECT * FROM Espacos WHERE id = ?', [id]);
 
+            const [solicitacoes] = await mysql.execute('SELECT * FROM Solicitacoes WHERE id_espaco = ?', [id]);
+
             if (espaco.length === 0) {
                 return res.status(404).send({ message: 'Espaço não encontrado' });
+            }
+
+            if (solicitacoes.length > 0) {
+                return res.status(409).send({ message: 'Existem solicitações para este espaço' });
             }
 
             await mysql.execute('DELETE FROM Espacos WHERE id = ?', [id]);
