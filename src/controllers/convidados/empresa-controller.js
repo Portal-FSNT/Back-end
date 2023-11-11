@@ -65,8 +65,14 @@ module.exports = {
 
             const [empresa] = await mysql.execute('SELECT * FROM Empresas WHERE id = ?', [id]);
 
+            const convidados = await mysql.execute('SELECT * FROM Convidados WHERE id_empresa = ?', [id]);
+
             if (empresa.length === 0) {
                 return res.status(404).json({ message: 'Empresa não encontrada' });
+            }
+
+            if (convidados.length > 0) {
+                return res.status(400).json({ message: 'Existem convidados relacionados a esta empresa' });
             }
 
             const query = 'DELETE FROM Empresas WHERE id = ?';
