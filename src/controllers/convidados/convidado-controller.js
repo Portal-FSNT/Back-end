@@ -4,7 +4,8 @@ module.exports = {
 
     getAllConvidados: async (req, res) => {
         try {
-            const { id, nome, email, telefone, cargo, nome_empresa } = req.query;
+            const { id, nome, email, telefone, cargo, nome_empresa,id_evento } = req.query;
+            console.log(req.query)
             const params = [];
     
             let query = 
@@ -17,6 +18,7 @@ module.exports = {
                     Empresas.nome AS nome_empresa 
                 FROM Convidados 
                 INNER JOIN Empresas ON Convidados.id_empresa = Empresas.id
+                LEFT JOIN Convidado_Evento ConvidadoEvento ON Convidados.id = ConvidadoEvento.id_convidado
                 WHERE 1=1`;
     
             if (id) {
@@ -47,6 +49,11 @@ module.exports = {
             if (nome_empresa) {
                 query += ' AND Empresas.nome LIKE ?';
                 params.push(`%${nome_empresa}%`);
+            }
+
+            if (id_evento) {
+                query += ' AND ConvidadoEvento.id_evento = ?';
+                params.push(id_evento);
             }
     
             const [convidados] = await mysql.execute(query, params);
@@ -104,6 +111,33 @@ module.exports = {
             await mysql.execute(query, [id_evento, id_convidado]);
 
             return res.status(201).json({ message: 'Convidado convidado com sucesso!' });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Erro interno do servidor' });
+        }
+    },
+    desconvidar: async (req, res) => {
+        try {
+            console.log("SAAAAAAI")
+            const { id_evento, id_convidado } = req.body;
+
+            const [evento] = await mysql.execute('SELECT * FROM Eventos WHERE id = ?', [id_evento]);
+
+            if (evento.length === 0) {
+                return res.status(404).json({ message: 'Evento não encontrado' });
+            }
+
+            const [convidado] = await mysql.execute('SELECT * FROM Convidados WHERE id = ?', [id_convidado]);
+
+            if (convidado.length === 0) {
+                return res.status(404).json({ message: 'Convidado não encontrado' });
+            }
+
+            const query = 'DELETE FROM Convidado_Evento WHERE id_evento = ? AND id_convidado = ?';
+
+            await mysql.execute(query, [id_evento, id_convidado]);
+
+            return res.status(201).json({ message: 'Convidado desconvidado com sucesso!' });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ message: 'Erro interno do servidor' });

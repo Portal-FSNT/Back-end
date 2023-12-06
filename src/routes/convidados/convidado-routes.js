@@ -13,7 +13,8 @@ router.get('/', celebrate({
         email: Joi.string().email(),
         telefone: Joi.string(),
         cargo: Joi.string(),
-        nome_empresa: Joi.string()
+        nome_empresa: Joi.string(),
+        id_evento: Joi.number(),
     })
 }), convidadoController.getAllConvidados);
 
@@ -33,6 +34,12 @@ router.post('/convidar', celebrate({
         id_evento: Joi.number().required()
     })
 }), convidadoController.convidar);
+router.post('/desconvidar', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        id_convidado: Joi.number().required(),
+        id_evento: Joi.number().required()
+    })
+}), convidadoController.desconvidar);
 
 router.patch('/update/:id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({

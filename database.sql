@@ -70,13 +70,6 @@ CREATE TABLE IF NOT EXISTS Convidados (
     FOREIGN KEY (id_empresa) REFERENCES Empresas(id)
 );
 
--- Tabela de Convidados e Eventos
-CREATE TABLE IF NOT EXISTS Convidado_Evento (
-    id_convidado INT NOT NULL,
-    id_evento INT NOT NULL,
-    FOREIGN KEY (id_convidado) REFERENCES Convidados(id),
-    FOREIGN KEY (id_evento) REFERENCES Solicitacoes(id)
-);
 
 -- Tabela de Eventos
 CREATE TABLE IF NOT EXISTS Eventos (
@@ -94,6 +87,15 @@ CREATE TABLE IF NOT EXISTS Eventos (
     PRIMARY KEY (id),
     FOREIGN KEY (id_espaco) REFERENCES Espacos(id)
 );
+
+-- Tabela de Convidados e Eventos
+CREATE TABLE IF NOT EXISTS Convidado_Evento (
+    id_convidado INT NOT NULL,
+    id_evento INT NOT NULL,
+    FOREIGN KEY (id_convidado) REFERENCES Convidados(id),
+    FOREIGN KEY (id_evento) REFERENCES Eventos(id)
+);
+
 
 -- Tabela de Imagens
 CREATE TABLE IF NOT EXISTS Imagens (
