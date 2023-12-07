@@ -65,7 +65,7 @@ module.exports = {
 
             const [empresa] = await mysql.execute('SELECT * FROM Empresas WHERE id = ?', [id]);
 
-            const convidados = await mysql.execute('SELECT * FROM Convidados WHERE id_empresa = ?', [id]);
+            const [convidados] = await mysql.execute('SELECT * FROM Convidados WHERE id_empresa = ?', [id]);
 
             if (empresa.length === 0) {
                 return res.status(404).json({ message: 'Empresa não encontrada' });
