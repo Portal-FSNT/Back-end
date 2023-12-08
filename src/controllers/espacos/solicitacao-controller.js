@@ -117,6 +117,18 @@ module.exports = {
             console.error(err);
             return res.status(500).json({ message: 'Erro interno do servidor' });
         }
+    },
+
+    deleteSolicitacao: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            await mysql.execute('DELETE FROM Solicitacoes WHERE id = ?', [id]);
+            return res.status(200).send({ message: 'Solicitação deletado com sucesso!' });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send({ message: 'Erro interno do servidor' });
+        }
     }
     
 }

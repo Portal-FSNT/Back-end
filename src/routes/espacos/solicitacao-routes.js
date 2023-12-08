@@ -37,6 +37,12 @@ router.patch('/rejeitar/:id', celebrate({
     })
 }), solicitacaoController.reprovarSolicitacao);
 
+router.delete('/delete/:id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        id: Joi.number().integer().required()
+    })
+}), solicitacaoController.deleteSolicitacao);
+
 router.use(errors());
 
 module.exports = router;
