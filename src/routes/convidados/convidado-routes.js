@@ -18,6 +18,18 @@ router.get('/', celebrate({
     })
 }), convidadoController.getAllConvidados);
 
+router.get('/listapessoas', celebrate({
+    [Segments.QUERY]: Joi.object().keys({
+        id: Joi.number(),
+        nome: Joi.string(),
+        email: Joi.string().email(),
+        telefone: Joi.string(),
+        cargo: Joi.string(),
+        nome_empresa: Joi.string(),
+    })
+}), convidadoController.getConvidados);
+
+
 router.post('/create', celebrate({
     [Segments.BODY]: Joi.object().keys({
         nome: Joi.string().required(),

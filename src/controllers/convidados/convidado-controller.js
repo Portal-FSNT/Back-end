@@ -64,6 +64,67 @@ module.exports = {
         }
     },    
 
+    getConvidados: async (req, res) => {
+        try {
+            const { id, nome, email, telefone, cargo, nome_empresa,id_evento } = req.query;
+            console.log(req.query)
+            const params = [];
+    
+            let query = 
+                `SELECT 
+                    Convidados.id, 
+                    Convidados.nome, 
+                    Convidados.email, 
+                    Convidados.telefone, 
+                    Convidados.cargo, 
+                    Empresas.nome AS nome_empresa 
+                FROM Convidados 
+                INNER JOIN Empresas ON Convidados.id_empresa = Empresas.id
+                WHERE 1=1`;
+    
+            if (id) {
+                query += ' AND Convidados.id = ?';
+                params.push(id);
+            }
+    
+            if (nome) {
+                query += ' AND Convidados.nome LIKE ?';
+                params.push(`%${nome}%`);
+            }
+    
+            if (email) {
+                query += ' AND Convidados.email LIKE ?';
+                params.push(`%${email}%`);
+            }
+    
+            if (telefone) {
+                query += ' AND Convidados.telefone LIKE ?';
+                params.push(`%${telefone}%`);
+            }
+    
+            if (cargo) {
+                query += ' AND Convidados.cargo LIKE ?';
+                params.push(`%${cargo}%`);
+            }
+    
+            if (nome_empresa) {
+                query += ' AND Empresas.nome LIKE ?';
+                params.push(`%${nome_empresa}%`);
+            }
+
+            if (id_evento) {
+                query += ' AND ConvidadoEvento.id_evento = ?';
+                params.push(id_evento);
+            }
+    
+            const [convidados] = await mysql.execute(query, params);
+            return res.status(200).json(convidados);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Erro interno do servidor' });
+        }
+    },    
+
     createConvidado: async (req, res) => {
         try {
             const { nome, email, telefone, cargo, id_empresa } = req.body;
